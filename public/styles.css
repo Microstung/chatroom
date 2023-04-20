@@ -1,0 +1,99 @@
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-color: #222;
+  font-family: sans-serif;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+}
+
+#chat-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#chat-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  padding-bottom: 4rem; /* Added extra padding at the bottom */
+}
+
+#messages {
+  display: flex;
+  flex-direction: column;
+}
+
+.message {
+  margin-bottom: 1rem;
+}
+
+#message-form {
+  display: flex;
+  background-color: #222;
+  padding: 10px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+}
+
+#message-input {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border: 1px solid #444;
+  background-color: #333;
+  color: #eee;
+  margin-right: 0.5rem;
+}
+
+button {
+  background-color: #444;
+  border: none;
+  color: #eee;
+  padding: 0.5rem 1rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+#login-form {
+  display: flex;
+}
+
+#username-input {
+  padding: 0.5rem;
+  border: 1px solid #444;
+  background-color: #333;
+  color: #eee;
+  margin-right: 0.5rem;
+}
+
+.notification {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background-color: #3a3a3a;
+  border: 1px solid #444;
+  padding: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  display: none;
+  z-index: 1000;
+}
+
+a {
+  color: #ffff00;
+  text-decoration: underline;
+}
