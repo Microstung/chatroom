@@ -39,20 +39,8 @@ socket.on('update user count', (count) => {
 });
 
 socket.on('chat message', (msg) => {
-  const messageElement = document.createElement('div');
-  messageElement.classList.add('message');
-  messageElement.innerHTML = msg;
-  chatContainer.appendChild(messageElement);
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-
-  const linkify = (text) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    return text.replace(urlRegex, (url) => {
-      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
-    });
-  };
-
-  messageElement.innerHTML = linkify(msg);
+  const messageElement = document.createElement('p');
+  messageElement.textContent = msg;
   chatContainer.appendChild(messageElement);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 });
@@ -60,10 +48,17 @@ socket.on('chat message', (msg) => {
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const message = messageInput.value;
-  if (message === "debug.firechat") {
-    socket.emit('debug message');
+
+  if (message === "debug.firechat" && socket.username === "fierce") {
+    const password = prompt("Enter the password:");
+    if (password === "fierce_castle") {
+      socket.emit('debug message');
+    } else {
+      alert("Incorrect password.");
+    }
   } else {
     socket.emit('chat message', message);
   }
+
   messageInput.value = '';
 });

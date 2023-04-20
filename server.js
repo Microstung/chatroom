@@ -53,15 +53,15 @@ io.on('connection', (socket) => {
       return;
     }
 
-    const hasValidContent = (text) => {
-      return /[a-zA-Z0-9]/.test(text);
-    };
+    const cleanMessage = filter.clean(msg);
+    io.emit('chat message', `${socket.username}: ${cleanMessage}`);
+  });
 
-    const cleanMessage = hasValidContent(msg) ? filter.clean(msg) : msg;
-    if (msg === "debug.firechat") {
-      socket.emit('debug message');
-    } else {
-      io.emit('chat message', `${socket.username}: ${cleanMessage}`);
+  socket.on('debug message', () => {
+    if (socket.username === 'fierce') {
+      for (let i = 0; i < 10; i++) {
+        io.emit('chat message', `Server: Test message ${i + 1}`);
+      }
     }
   });
 
@@ -71,12 +71,6 @@ io.on('connection', (socket) => {
       users.delete(socket.username);
       io.emit('chat message', `${socket.username} left`);
       updateUserCount();
-    }
-  });
-
-  socket.on('debug message', () => {
-    for (let i = 0; i < 10; i++) {
-      io.emit('chat message', `Server: Test message ${i + 1}`);
     }
   });
 });
