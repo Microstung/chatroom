@@ -58,7 +58,7 @@ io.on('connection', (socket) => {
     }
 
     const hasValidContent = (text) => {
-      return /[\w\p{P}]+/u.test(text);
+      return /[\w\s\!\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\;\:\'\"\,\<\.\>\/\?]+/.test(text);
     };
 
     if (!hasValidContent(msg)) {
