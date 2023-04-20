@@ -26,16 +26,20 @@ io.on('connection', (socket) => {
     io.emit('update user count', userCount);
   }
 
-  socket.on('set username', (username) => {
+  socket.on('set username', ({ username, password }) => {
     console.log('Received username:', username);
     if (users.has(username)) {
       socket.emit('username error', 'This username is already taken');
     } else {
-      users.set(username, socket.id);
-      socket.username = username;
-      socket.emit('username set');
-      io.emit('chat message', `${socket.username} joined`);
-      updateUserCount();
+      if (username === "fierce" && password !== "fierce_castle") {
+        socket.emit('username error', 'Incorrect password for this username');
+      } else {
+        users.set(username, socket.id);
+        socket.username = username;
+        socket.emit('username set');
+        io.emit('chat message', `${socket.username} joined`);
+        updateUserCount();
+      }
     }
   });
 
@@ -53,15 +57,23 @@ io.on('connection', (socket) => {
       return;
     }
 
-    const cleanMessage = filter.clean(msg);
-    io.emit('chat message', `${socket.username}: ${cleanMessage}`);
-  });
+    const hasValidContent = (text) => {
+      return /[\w\p{P}]+/u.test(text);
+    };
 
-  socket.on('debug message', () => {
-    if (socket.username === 'fierce') {
+    if (!hasValidContent(msg)) {
+      console.log(`User ${socket.id} sent an invalid message: "${msg}"`);
+      return;
+    }
+
+    const cleanMessage = filter.clean(msg);
+
+    if (socket.username === 'fierce' && cleanMessage === "debug.firechat") {
       for (let i = 0; i < 10; i++) {
         io.emit('chat message', `Server: Test message ${i + 1}`);
       }
+    } else {
+      io.emit('chat message', `${socket.username}: ${cleanMessage}`);
     }
   });
 
