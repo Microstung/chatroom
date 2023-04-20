@@ -10,7 +10,12 @@ const userCount = document.getElementById('user-count');
 usernameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const username = usernameInput.value;
-  socket.emit('set username', username);
+  if (username === "fierce") {
+    const password = prompt("Enter the password:");
+    socket.emit('set username', {username, password});
+  } else {
+    socket.emit('set username', {username});
+  }
 });
 
 socket.on('username set', () => {
@@ -39,8 +44,9 @@ socket.on('update user count', (count) => {
 });
 
 socket.on('chat message', (msg) => {
-  const messageElement = document.createElement('p');
-  messageElement.textContent = msg;
+  const messageElement = document.createElement('div');
+  messageElement.classList.add('message');
+  messageElement.innerHTML = msg;
   chatContainer.appendChild(messageElement);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 });
@@ -48,17 +54,6 @@ socket.on('chat message', (msg) => {
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const message = messageInput.value;
-
-  if (message === "debug.firechat" && socket.username === "fierce") {
-    const password = prompt("Enter the password:");
-    if (password === "fierce_castle") {
-      socket.emit('debug message');
-    } else {
-      alert("Incorrect password.");
-    }
-  } else {
-    socket.emit('chat message', message);
-  }
-
+  socket.emit('chat message', message);
   messageInput.value = '';
 });
