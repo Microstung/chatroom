@@ -7,3 +7,5 @@ A simple chatroom with a filter.
 - Passwords for specific names (change in `server.js`)
 - Online counter
 - dark mode !!!!
+- link syntax
+- banned links (customizable)
