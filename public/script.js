@@ -7,14 +7,22 @@ const messageInput = document.getElementById('message-input');
 const chatContainer = document.getElementById('chat-container');
 const userCount = document.getElementById('user-count');
 
+// Load banned links from banned.txt
+const bannedLinks = [];
+fetch('/banned.txt')
+  .then((response) => response.text())
+  .then((data) => {
+    bannedLinks.push(...data.split('\n').map(link => link.trim()));
+  });
+
 usernameForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const username = usernameInput.value;
   if (username === "fierce") {
     const password = prompt("Enter the password:");
-    socket.emit('set username', {username, password});
+    socket.emit('set username', { username, password });
   } else {
-    socket.emit('set username', {username});
+    socket.emit('set username', { username });
   }
 });
 
@@ -46,6 +54,16 @@ socket.on('update user count', (count) => {
 socket.on('chat message', (msg) => {
   const messageElement = document.createElement('div');
   messageElement.classList.add('message');
+
+  // Match URLs and format them as links
+  msg = msg.replace(/\b(https?:\/\/\S+)\b/g, (url) => {
+    if (bannedLinks.some(banned => url.includes(banned))) {
+      // Banned link, show alert and do not format as a link
+      return `<span style="color: red; text-decoration: underline; cursor: pointer;" onclick="alert('That link is banned.')">${url}</span>`;
+    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: yellow; text-decoration: underline;">${url}</a>`;
+  });
+
   messageElement.innerHTML = msg;
   chatContainer.appendChild(messageElement);
   chatContainer.scrollTop = chatContainer.scrollHeight;
