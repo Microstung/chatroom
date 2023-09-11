@@ -55,8 +55,11 @@ socket.on('chat message', (msg) => {
   const messageElement = document.createElement('div');
   messageElement.classList.add('message');
 
+  // Block HTML tags and attributes
+  const sanitizedMessage = sanitizeHTML(msg);
+
   // Match URLs and format them as links
-  msg = msg.replace(/\b(https?:\/\/\S+)\b/g, (url) => {
+  sanitizedMessage = sanitizedMessage.replace(/\b(https?:\/\/\S+)\b/g, (url) => {
     if (bannedLinks.some(banned => url.includes(banned))) {
       // Banned link, show alert and do not format as a link
       return `<span style="color: red; text-decoration: underline; cursor: pointer;" onclick="alert('That link is banned.')">${url}</span>`;
@@ -64,7 +67,7 @@ socket.on('chat message', (msg) => {
     return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: yellow; text-decoration: underline;">${url}</a>`;
   });
 
-  messageElement.innerHTML = msg;
+  messageElement.innerHTML = sanitizedMessage;
   chatContainer.appendChild(messageElement);
   chatContainer.scrollTop = chatContainer.scrollHeight;
 });
@@ -72,6 +75,17 @@ socket.on('chat message', (msg) => {
 messageForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const message = messageInput.value;
-  socket.emit('chat message', message);
+
+  // Block HTML tags and attributes
+  const sanitizedMessage = sanitizeHTML(message);
+
+  socket.emit('chat message', sanitizedMessage);
   messageInput.value = '';
 });
+
+// Function to sanitize HTML input
+function sanitizeHTML(input) {
+  const div = document.createElement('div');
+  div.textContent = input;
+  return div.innerHTML;
+}
