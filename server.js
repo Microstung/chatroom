@@ -3,8 +3,8 @@ const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
 const Filter = require('bad-words');
+const sanitizeHtml = require('sanitize-html'); // Add this line for HTML sanitation
 const fs = require('fs');
-const readline = require('readline');
 
 const app = express();
 const server = http.createServer(app);
@@ -21,21 +21,13 @@ const RATE_LIMIT_MAX_MESSAGES = 5;
 const rateLimitMap = new Map();
 const users = new Map();
 
-// Initialize an empty array for banned links
+// Load banned links from banned.txt
 const bannedLinks = [];
-
-// Create a readline interface for reading the banned.txt file
-const rl = readline.createInterface({
-  input: fs.createReadStream('banned.txt'), // Specify the path to your banned.txt file
-  output: process.stdout,
-  terminal: false,
-});
-
-// Read each line from the file and add it to the bannedLinks array
-rl.on('line', (line) => {
-  const trimmedLine = line.trim();
-  if (trimmedLine.length > 0) {
-    bannedLinks.push(trimmedLine);
+fs.readFile('banned.txt', 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error reading banned.txt:', err);
+  } else {
+    bannedLinks.push(...data.split('\n').map(link => link.trim()));
   }
 });
 
@@ -52,7 +44,7 @@ io.on('connection', (socket) => {
     if (users.has(username)) {
       socket.emit('username error', 'This username is already taken');
     } else {
-      if (username === "fierce" && password !== "fierce_castle") {
+      if (username === 'fierce' && password !== 'fierce_castle') {
         socket.emit('username error', 'Incorrect password for this username');
       } else {
         users.set(username, socket.id);
@@ -87,25 +79,20 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // Check if the message contains any banned links
-    const containsBannedLink = bannedLinks.some(bannedLink => msg.includes(bannedLink));
+    // Sanitize the message to remove any potentially harmful content
+    const cleanMessage = sanitizeHtml(msg, {
+      allowedTags: [], // Allow no HTML tags
+      allowedAttributes: {}, // Allow no attributes
+    });
 
-    if (containsBannedLink) {
-      // Banned link found, notify the sender and others
-      socket.emit('chat message', `${socket.username}: (Banned Link)`);
-      io.emit('chat message', `(${socket.username}'s message contained a banned link)`);
+    // Check if the message contains banned links
+    if (bannedLinks.some(banned => cleanMessage.includes(banned))) {
+      // Notify the sender about the banned link
+      socket.emit('chat message', 'Your message contains a banned link.');
       return;
     }
 
-    const cleanMessage = filter.clean(msg);
-
-    if (socket.username === 'fierce' && cleanMessage === "debug.firechat") {
-      for (let i = 0; i < 10; i++) {
-        io.emit('chat message', `Server: Test message ${i + 1}`);
-      }
-    } else {
-      io.emit('chat message', `${socket.username}: ${cleanMessage}`);
-    }
+    io.emit('chat message', `${socket.username}: ${cleanMessage}`);
   });
 
   socket.on('disconnect', () => {
