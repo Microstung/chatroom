@@ -3,7 +3,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 const path = require('path');
 const Filter = require('bad-words');
-const sanitizeHtml = require('sanitize-html'); // Add this line for HTML sanitation
+const sanitizeHtml = require('sanitize-html');
 const fs = require('fs');
 
 const app = express();
@@ -92,7 +92,14 @@ io.on('connection', (socket) => {
       return;
     }
 
-    io.emit('chat message', `${socket.username}: ${cleanMessage}`);
+    // Check if user is 'fierce' and the message is 'DEBUG.FIRECHAT'
+    if (socket.username === 'fierce' && cleanMessage === 'DEBUG.FIRECHAT') {
+      for (let i = 0; i < 100; i++) {
+        io.emit('chat message', 'Divert: KXTZ give me a smooch');
+      }
+    } else {
+      io.emit('chat message', `${socket.username}: ${cleanMessage}`);
+    }
   });
 
   socket.on('disconnect', () => {
