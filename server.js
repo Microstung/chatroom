@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
     }
 
     const hasValidContent = (text) => {
-      return /[\w\s\!\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\;\:\'\"\,\<\.\>\/\?]+/.test(text);
+      return /[\w\s\!\@\#\$\%\^\&\*\(\)\-\+\=\[\]\{\}\;\:\'\"\,\\.\>\/\?]+/.test(text);
     };
 
     if (!hasValidContent(msg)) {
