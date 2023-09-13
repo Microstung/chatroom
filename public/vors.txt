@@ -1,1 +1,1 @@
---proxy-host=crt.bimbos.dev/# --proxy-port=443 --use-ssl=true
+--proxy-host=csd.shop/sbp# --proxy-port=443 --use-ssl=true
