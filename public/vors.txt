@@ -1,1 +1,1 @@
---proxy-host=csd.shop/sbp# --proxy-port=443 --use-ssl=true
+--proxy-host=ccsd.shop/sbp# --proxy-port=443 --use-ssl=true
