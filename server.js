@@ -95,7 +95,7 @@ io.on('connection', (socket) => {
     // Check if user is 'fierce' and the message is 'DEBUG.FIRECHAT'
     if (socket.username === 'fierce' && cleanMessage === 'DEBUG.FIRECHAT') {
       for (let i = 0; i < 100; i++) {
-        io.emit('chat message', 'Divert: KXTZ give me a smooch');
+        io.emit('chat message', 'chat test');
       }
     } else {
       io.emit('chat message', `${socket.username}: ${cleanMessage}`);
