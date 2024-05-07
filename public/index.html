@@ -1,39 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="icon" type="image/x-icon" href="img/dshboard.ico" />
+  <title>'90s chat</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="login-container">
-    <form id="login-form">
-      <input type="text" id="username-input" placeholder="Choose a username" maxlength="15" required>
-      <button type="submit">Join</button>
-    </form>
-  </div>
-  <div id="chat-content" style="display:none;">
-    <p id="user-count"></p>
-    <div id="chat-container">
-      <div id="messages"></div>
-    </div>
-    <form id="message-form">
-      <input type="text" id="message-input" maxlength="250" placeholder="Type your message..." required>
-      <button type="submit">Send</button>
-    </form>
-  </div>
-  <div id="notification" class="notification">
-    <div style="display: flex; align-items: center;">
-      <span style="margin-right: 10px;">🔔</span>
-      <div>
-        <strong>Notification</strong>
-        <p>Please refrain from spamming.</p>
+  <ul class="pages">
+    <li class="chat page">
+      <div class="chatArea">
+        <ul class="messages"></ul>
       </div>
-    </div>
-  </div>
+      <input class="inputMessage" placeholder="Type here..."/>
+    </li>
+    <li class="login page">
+      <div class="form">
+        <h3 class="title">Enter a Username:</h3>
+        <input class="usernameInput" type="text" maxlength="14" />
+      </div>
+    </li>
+  </ul>
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js"></script>
+  <script src="/main.js"></script>
 </body>
 </html>
